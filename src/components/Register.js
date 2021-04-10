@@ -1,20 +1,21 @@
 import React from 'react'
-import {useFormik,FormikProvider} from 'formik'
+import {useFormik,FormikProvider, Field,ErrorMessage} from 'formik'
 import * as Yup from 'yup'
-const Register = () => {
 
+const Register = () => {
     const registerSchema=Yup.object().shape({
-        name: Yup.string().min(4, 'Minimum 4 charaters').max(40, 'Maximum 40 characters').required('Name is required'),
-        email: Yup.string().email('Invalid email').required('Email is required'),
+        name: Yup.string().min(4, 'At least 4 characters').max(32, 'At most 32 characters').required('Name is required'),
         phone: Yup.string().matches(/^[0-9]{10}$/, 'Phone is invalid').required('Phone is required'),
-        password: Yup.string().min(6,'Atleast 4 characters').max(32, 'Atmost 32 characters').required(),
-        confirm_password: Yup.string().oneOf([Yup.ref('password'),null], 'Passwords must match').required('Password is mandatory')
+        email: Yup.string().email('Email is invalid').required('Email is mandatory'),
+        password: Yup.string().min(6, 'At least 6 characters').max(32, 'At most 32 characters').required('Password is required'),
+        confirm_password: Yup.string().oneOf([Yup.ref('password'),null],'Password must match').required('Password is required')
     })
+
     const formik=useFormik({
         initialValues:  {
             name: '',
-            email: '',
             phone: '',
+            email: '',
             password: '',
             confirm_password: '',
         },
@@ -26,26 +27,26 @@ const Register = () => {
 
     return (
         <div>
-            <h3>Register</h3>
             <FormikProvider value={formik}>
                 <form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-                    <input type='text' name='name' placeholder='Enter name' onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name} /><br/>
-                    {formik.touched.name && formik.errors.name?formik.errors.name:null}<br/>
+                    <h3>Register</h3>
+                    <Field name='name' type='text' placeholder='Enter name' /><br/>
+                    <ErrorMessage name='name'   /><br/>
 
-                    <input type='email' name='email' placeholder='Enter email' onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email}    /><br/>
-                    {formik.touched.email && formik.errors.email?formik.errors.email:null}<br/>
+                    <Field name='phone' type='number' placeholder='Enter phone' /><br/>
+                    <ErrorMessage name='phone'   /><br/>
 
-                    <input type='number' name='phone' placeholder='Enter phone' onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.phone} /><br/>
-                    {formik.touched.phone && formik.errors.phone?formik.errors.phone:null}<br/>
+                    <Field name='email' type='email' placeholder='Enter email' /><br/>
+                    <ErrorMessage name='email'   /><br/>
 
-                    <input type='password' name='password' placeholder='Enter password' onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password}    /><br/>
-                    {formik.touched.password && formik.errors.password?formik.errors.password:null}<br/>
+                    <Field name='password' type='password' placeholder='Enter password' /><br/>
+                    <ErrorMessage name='password'   /><br/>
 
-                    <input type='password' name='confirm_password' placeholder='Enter confirm password' onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.confirm_password} /><br/>
-                    {formik.touched.confirm_password && formik.errors.confirm_password?formik.errors.confirm_password:null}<br/>
+                    <Field name='confirm_password' type='password' placeholder='Enter confirm password' /><br/>
+                    <ErrorMessage name='confirm_password'   /><br/>
 
-                    <input type='submit' value='Submit' />
-                    <input type='reset' value='Reset' />
+                    <button type='submit' disabled={!formik.isValid}>Submit</button>
+                    <button type='reset'>Reset</button>
                 </form>
             </FormikProvider>
         </div>
